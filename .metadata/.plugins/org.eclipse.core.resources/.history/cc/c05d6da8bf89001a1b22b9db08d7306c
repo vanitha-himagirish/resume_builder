@@ -1,0 +1,9 @@
+package dao;
+
+
+public class loginDAO {
+
+	public loginDAO(string uname,string pwd) {
+		
+	}
+}

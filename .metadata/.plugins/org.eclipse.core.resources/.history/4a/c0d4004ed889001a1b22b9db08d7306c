@@ -1,0 +1,31 @@
+package coreservlets;
+
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+
+@WebServlet("/user")
+public class UserLoginController extends HttpServlet {
+  private UserLoginDAO userLogin = new UserLoginDAO();
+  String address;
+  @Override
+  public void doPost(HttpServletRequest request,
+                    HttpServletResponse response)
+      throws ServletException, IOException {
+    
+	String UserName = request.getParameter("txtUserName");
+    String Password = request.getParameter("txtPass");
+    
+    boolean login = userLogin.UserLogin(UserName, Password);
+    if (login == true) {
+    	 
+    	 address = "/WEB-INF/jsp/userprofile.jsp";
+    }else {
+    	address =  "/WEB-INF/jsp/login.jsp";
+    }
+     RequestDispatcher dispatcher = request.getRequestDispatcher(address);
+    dispatcher.forward(request, response);
+  }
+}

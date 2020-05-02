@@ -1,0 +1,24 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Add Relevant Skills</title>
+</head>
+<body>
+<form action="userskill_submit"  method="post" class="needs-validation" >
+	<div class="container">
+ 	 <div class="form-row">
+    	<div class="form-group col-md-6">
+      		<label for="txtSkill">User Name</label>
+      		<textarea name="txtSkill" id="txtSkill" rows="4" cols="50"></textarea>
+      	</div>
+    	 <div style="float:right">
+ 		 	<input type="submit" class="btn btn-primary" name="btnSubmit" placeholder="Next">
+ 		</div>
+      	</div>
+      	</div>
+</form>
+</body>
+</html>

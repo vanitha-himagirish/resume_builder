@@ -1,0 +1,15 @@
+package coreservlets;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+
+@WebServlet("/userskill_submit")
+public class UserDetailsController {
+	
+
+}

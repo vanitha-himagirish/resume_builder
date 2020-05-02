@@ -1,0 +1,13 @@
+package dao;
+
+
+public class loginDAO {
+	
+	public loginDAO(String uname,String pwd) {
+		
+		connection con;
+		con.getConnection("resumebuilder", "root", "");
+		
+		
+	}
+}

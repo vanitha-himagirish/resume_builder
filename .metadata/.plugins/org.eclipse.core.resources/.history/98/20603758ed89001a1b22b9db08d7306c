@@ -1,0 +1,105 @@
+package coreservlets;
+
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class UserLoginDAO {
+	public Connection getconnection() throws ClassNotFoundException
+	{
+	    java.sql.Connection con = null;
+	   
+
+		try {
+			 Class.forName("com.mysql.jdbc.Driver");
+		    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/resumebuilder","root","");		    
+		  }
+		  catch(SQLException e) {
+		    System.out.println("SQLException caught: " +e.getMessage());
+		  }
+	    return con;
+	}
+	
+	public boolean UserLogin(String user, String Password) {
+		boolean status = false;
+		try{  
+			Connection con=getconnection();  			            
+			PreparedStatement ps=con.prepareStatement(  
+			    "select user_name,user_password from user_profile where user_name=? and user_password=?"); 			  
+			ps.setString(1,user);  
+			ps.setString(2, Password);  			              
+			ResultSet rs=ps.executeQuery();  
+			status=rs.next();  
+			rs.close();
+			disconnect(con);
+		 }catch(Exception e){
+			 System.out.println(e.getMessage());
+			 
+		 }  
+			  
+			return status;  
+			  
+	}
+	
+	public UserProfile getUserProfile(String username) {
+		UserProfile user = null;
+		try{  
+			Connection con=getconnection();  			            
+			PreparedStatement ps=con.prepareStatement(  
+			    "select * from user_profile where user_name=?"); 			  
+			ps.setString(1,username);  				              
+			ResultSet rs=ps.executeQuery();  
+			if (rs.next()) {
+				user = new UserProfile();
+				user.setUserName(rs.getString("user_name"));
+				user.setFirstName(rs.getString("user_fname"));
+				user.setLastName(rs.getString("user_lname"));
+				user.setMiddleName(rs.getString("user_mname"));
+				user.setPassword(rs.getString("user_password"));
+				user.setAddress(rs.getString("user_Address"));
+				user.setAddress1(rs.getString("user_Address2"));
+				user.setCity(rs.getString("user_City"));
+				user.setStateID(rs.getInt("user_State"));
+				user.setZipcode(rs.getString("user_Zipcode"));
+						}
+			rs.close();
+			disconnect(con);
+		}catch(Exception e){
+			 System.out.println(e.getMessage());
+			 
+		 }  
+        return user;
+        
+			  
+	}
+	public void disconnect(Connection con) throws SQLException {
+		con.close();
+	}
+	public void updateUser(UserProfile user) {
+		String sql = "update  user_fname=?, user_lname=?, user_mname=?,user_Address=?,user_Address2=?,user_City=?,user_State=?,user_Zipcode=?  where username = ?";
+		
+		Connection con=getconnection();  
+		
+        PreparedStatement statement = con.prepareStatement(sql);
+        statement.setString(1, user.getFirstName());
+        statement.setString(2, user.getLastName());
+        statement.setString(3, user.getMiddleName());
+        statement.setString(4, user.getAddress());
+        statement.setString(5, user.getAddress1());
+        statement.setString(6, user.getCity());
+        statement.setInt(7, user.getStateID());
+        statement.setString(8, user.getZipcode());
+
+        boolean rowUpdated = statement.executeUpdate() > 0;
+        statement.close();
+        disconnect(con);
+        
+        return rowUpdated;     
+    }
+		
+	}
+}

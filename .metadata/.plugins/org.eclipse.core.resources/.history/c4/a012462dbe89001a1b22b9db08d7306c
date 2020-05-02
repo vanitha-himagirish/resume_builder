@@ -1,0 +1,24 @@
+package dao;
+
+public class connection {
+	
+  
+	 
+			try {
+			    java.sql.Connection con;
+	            String connectionURL = "jdbc:mysql://localhost:3306/resumebuilder?user=root";
+	            Class.forName("com.mysql.jdbc.Driver"); 
+	            con = DriverManager.getConnection(connectionURL, "username", "password");
+	            if(!connection.isClosed())
+	                 out.println("Successfully connected to " + "MySQL server using TCP/IP...");
+	            connection.close();
+	        }catch(Exception ex){
+	            out.println("Unable to connect to database"+ex);
+	        }   
+		}catch(Exception e){}  
+		}  
+		  
+		 
+	}  
+
+}

@@ -1,0 +1,261 @@
+package coreservlets;
+
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserLoginDAO {
+	public Connection getconnection() throws ClassNotFoundException
+	{
+	    java.sql.Connection con = null;
+	   
+
+		try {
+			 Class.forName("com.mysql.jdbc.Driver");
+		    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/resumebuilder","root","");		    
+		  }
+		  catch(SQLException e) {
+		    System.out.println("SQLException caught: " +e.getMessage());
+		  }
+	    return con;
+	}
+	
+	public boolean UserLogin(String user, String Password) {
+		boolean status = false;
+		try{  
+			Connection con=getconnection();  			            
+			PreparedStatement ps=con.prepareStatement(  
+			    "select user_name,user_password from user_profile where user_name=? and user_password=?"); 			  
+			ps.setString(1,user);  
+			ps.setString(2, Password);  			              
+			ResultSet rs=ps.executeQuery();  
+			status=rs.next();  
+			rs.close();
+			disconnect(con);
+		 }catch(Exception e){
+			 System.out.println(e.getMessage());
+			 
+		 }  
+			  
+			return status;  
+			  
+	}
+	
+	public UserProfile getUserProfile(String username) {
+		UserProfile user = null;
+		try{  
+			Connection con=getconnection();  			            
+			PreparedStatement ps=con.prepareStatement(  
+			    "select * from user_profile where user_name=?"); 			  
+			ps.setString(1,username);  				              
+			ResultSet rs=ps.executeQuery();  
+			if (rs.next()) {
+				user = new UserProfile();
+				user.setUserName(rs.getString("user_name"));
+				user.setFirstName(rs.getString("user_fname"));
+				user.setLastName(rs.getString("user_lname"));
+	       			user.setMiddleName(rs.getString("user_mname"));
+				user.setPassword(rs.getString("user_password"));
+				user.setAddress(rs.getString("user_Address"));
+				user.setAddress1(rs.getString("user_Address2"));
+				user.setCity(rs.getString("user_City"));
+				user.setStateID(rs.getString("user_State"));
+				user.setZipcode(rs.getString("user_Zipcode"));
+						}
+			rs.close();
+			disconnect(con);
+		}catch(Exception e){
+			 System.out.println(e.getMessage());
+			 
+		 }  
+        return user;
+        
+			  
+	}
+	public List<State> listStates() throws SQLException {
+        List<State> listState = new ArrayList<>();
+         
+        String sql = "SELECT * FROM state";
+         
+       Connection con=null;
+       try {
+    	   con = getconnection();
+    	   Statement statement = con.createStatement();
+    	   ResultSet resultSet = statement.executeQuery(sql);
+    	   while (resultSet.next()) {
+    		   String statecode = resultSet.getString("state_code");
+    		   String statename = resultSet.getString("state_name");
+    		   int stateid=resultSet.getInt("state_id");             
+    		   State st = new State(stateid,statename,statecode);
+    		   listState.add(st);
+    	   	}
+    	   resultSet.close();
+    	   statement.close();
+    	   disconnect(con);
+       		} catch (ClassNotFoundException e) {
+       			e.printStackTrace();
+       		}
+       catch (SQLException e) {
+  			e.printStackTrace();
+  		}  
+         return listState;
+    }
+	public void disconnect(Connection con) throws SQLException {
+		con.close();
+	}
+	public boolean updateUser(UserProfile user) {
+		
+		String sql = "update user_profile set  user_fname=?, user_lname=?, user_mname=?,user_Address=?,user_Address2=?,user_City=?,user_State=?,user_Zipcode=?  where user_name = ?";
+		Connection con = null;
+		boolean rowUpdated = false;
+		try {
+			con = getconnection();
+			PreparedStatement statement = con.prepareStatement(sql);
+	        statement.setString(1, user.getFirstName());
+	        statement.setString(2, user.getLastName());
+	        statement.setString(3, user.getMiddleName());
+	        statement.setString(4, user.getAddress());
+	        statement.setString(5, user.getAddress1());
+	        statement.setString(6, user.getCity());
+	        statement.setString(7, user.getStateID());
+	        statement.setString(8, user.getZipcode());
+	        statement.setString(9, user.getUserName());
+	        
+	        rowUpdated = statement.executeUpdate() > 0;
+	        statement.close();
+	        disconnect(con);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		
+        
+        
+        return rowUpdated;     
+    }
+		
+	public boolean insertSkill(UserSkill Skill) throws SQLException {
+        String sql = "INSERT INTO user_skills (user_name,skill) VALUES (?, ?)";
+        Connection con = null;
+        boolean rowInserted = false;
+        
+        try {
+			con = getconnection();
+			PreparedStatement statement = con.prepareStatement(sql);
+		    statement.setString(1, Skill.getUserame());
+		    statement.setString(2, Skill.getSkill());
+		    rowInserted = statement.executeUpdate() > 0;
+		    statement.close();
+		    disconnect(con);
+		    
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}         
+       
+        return rowInserted;
+    }
+	
+	public List<UserSkill> listSkills(String username) throws SQLException {
+        List<UserSkill> skill = new ArrayList<>();
+         
+        String sql = "SELECT * FROM user_skills where user_name=?";
+         
+       Connection con=null;
+       
+       try {
+    	   con = getconnection();
+    	   PreparedStatement ps=con.prepareStatement(sql); 			  
+   			ps.setString(1,username);  				              
+   			ResultSet resultSet=ps.executeQuery();
+   			
+   			while (resultSet.next()) {
+    		   String user = resultSet.getString("user_name");
+    		   String userskill = resultSet.getString("skill");
+    		   int skillid = resultSet.getInt("skill_id");       
+    		   UserSkill st = new UserSkill(skillid,user,userskill);
+    		   skill.add(st);
+    	   	}
+   			resultSet.close();
+   			ps.close();
+   			disconnect(con);
+       } catch (ClassNotFoundException e) {
+       			e.printStackTrace();
+       		}
+       catch (SQLException e) {
+  			e.printStackTrace();
+  		}  
+         return skill;
+    }
+	
+	 public boolean deleteSkill(int id) throws SQLException {
+		 	String sql = "DELETE FROM user_skills where skill_id=?";
+	        Connection con = null;
+	        boolean rowDeleted = false;
+	        
+	        try {
+				con = getconnection();
+				PreparedStatement statement = con.prepareStatement(sql);
+			    statement.setInt(1, Skill.getSkillID());
+			    rowDeleted = statement.executeUpdate() > 0;
+			    statement.close();
+			    disconnect(con);
+			    
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}         
+	       
+	        return rowDeleted;   
+	    }
+	 public boolean updateSkill(UserSkill Skill) throws SQLException {
+		 	String sql = "update user_skills set skill=? where user_name=? and skill_id=?";
+	        Connection con = null;
+	        boolean rowUpdated = false;
+	        
+	        try {
+				con = getconnection();
+				PreparedStatement statement = con.prepareStatement(sql);
+				statement.setString(1, Skill.getSkill());
+			    statement.setString(2, Skill.getUserame());
+			    statement.setInt(3, Skill.getSkillID());
+			    rowUpdated = statement.executeUpdate() > 0;
+			    statement.close();
+			    disconnect(con);
+			    
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}         
+	       
+	        return rowUpdated;   
+	    }
+	 public UserSkill getUserSkill(int skillid) {
+		 	UserSkill skill = null;
+			try{  
+				Connection con=getconnection();  			            
+				PreparedStatement ps=con.prepareStatement(  
+				    "select * from user_skills where skill_id=?"); 			  
+				ps.setInt(1, skillid)	;			              
+				ResultSet rs=ps.executeQuery();  
+				if (rs.next()) {
+					skill = new UserSkill();
+					skill.setSkill(rs.getString("skill"));
+					skill.setSkillID(rs.getInt("skill_id"));						}
+				rs.close();
+				disconnect(con);
+			}catch(Exception e){
+				 System.out.println(e.getMessage());
+				 
+			 }  
+	        return skill;
+	        
+				  
+		}
+}

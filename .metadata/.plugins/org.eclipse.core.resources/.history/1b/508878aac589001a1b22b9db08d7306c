@@ -1,0 +1,19 @@
+package model;
+
+import java.sql.*;
+
+public class UserLoginDAO {
+	public Connection getconnection()
+	{
+		ry {
+		    java.sql.Connection con;
+		    Class.forName("org.gjt.mm.mysql.Driver");
+		    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/resumebuilder","root","");
+		    
+		    out.println (db+ "database successfully opened.");
+		  }
+		  catch(SQLException e) {
+		    out.println("SQLException caught: " +e.getMessage());
+		  }
+	}
+}

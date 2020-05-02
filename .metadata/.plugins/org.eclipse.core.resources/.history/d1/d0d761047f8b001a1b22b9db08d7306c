@@ -1,0 +1,103 @@
+package coreservlets;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+
+
+@WebServlet("/")
+public class UserSkillController extends HttpServlet {
+	
+	private UserLoginDAO userDAO = new UserLoginDAO();
+	 
+	  @Override         
+	  public void doGet(HttpServletRequest request,
+	                    HttpServletResponse response)
+	      throws ServletException, IOException {
+	    
+		  String action = request.getServletPath();
+
+	        try {
+	            switch (action) {
+	                case "/new":
+	                    showNewForm(request, response);
+	                    break;
+	                case "/insert":
+	                    insertUserSkill(request, response);
+	                    break;
+	                case "/edit":
+	                    showEditForm(request, response);
+	                    break;
+	                case "/update":
+	                    updateUserSkill(request, response);
+	                    break;
+	                default:
+	                    listUser(request, response);
+	                    break;
+	            }
+	        } catch (SQLException ex) {
+	            throw new ServletException(ex);
+	        }
+	    }
+	  
+	  private void listUser(HttpServletRequest request, HttpServletResponse response)
+			    throws SQLException, IOException, ServletException {
+		  		String username = "hg";
+		  		List<UserSkill> listSkill;
+		  		listSkill = userDAO.listSkills(username);
+				request.setAttribute("UserSkill", listSkill);			
+				RequestDispatcher dispatcher = request.getRequestDispatcher("userskills.jsp");
+			    dispatcher.forward(request, response);
+			    }
+
+			    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+			    throws ServletException, IOException {
+			        RequestDispatcher dispatcher = request.getRequestDispatcher("userskillform.jsp");
+			        dispatcher.forward(request, response);
+			    }
+	        
+			    private void insertUserSkill(HttpServletRequest request, HttpServletResponse response)
+			    	    throws SQLException, IOException {
+			    			String username = "hg";
+			    			String skill = request.getParameter("txtSkill");
+			    			UserSkill newSkill = new UserSkill(0,username,skill);
+			    			userDAO.insertSkill(newSkill);
+			    	        response.sendRedirect("list");
+			    	    }
+			    	private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+			    	    throws SQLException, ServletException, IOException {
+			    	        int id = Integer.parseInt(request.getParameter("id"));
+			    	        String username="hg";
+			    	        UserSkill existSkill = userDAO.getUserSkill(id);
+			    	        RequestDispatcher dispatcher = request.getRequestDispatcher("userskillform.jsp");
+			    	        request.setAttribute("existSkill", existSkill);
+			    	        dispatcher.forward(request, response);
+
+			    	    }
+		  	
+				    
+	private void updateUserSkill(HttpServletRequest request, HttpServletResponse response)
+	    throws SQLException, IOException {
+	        int id = Integer.parseInt(request.getParameter("id"));
+	        String user = "hg";
+	        String uskill = request.getParameter("txtSkill");
+	        UserSkill skill = new UserSkill(id,user,uskill);
+	        userDAO.updateSkill(skill);
+	        response.sendRedirect("list");
+	    }
+	
+	private void deleteUser(HttpServletRequest request, HttpServletResponse response)
+		    throws SQLException, IOException {
+		        int id = Integer.parseInt(request.getParameter("id"));
+		        userDAO.deleteSkill(id);
+		        response.sendRedirect("list");
+
+		    }
+}
+ 
+
+

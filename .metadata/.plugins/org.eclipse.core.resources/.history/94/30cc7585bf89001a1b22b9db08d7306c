@@ -1,0 +1,6 @@
+package dao;
+import myResume.src.model;
+
+public class loginDAO {
+
+}

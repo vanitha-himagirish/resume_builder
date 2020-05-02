@@ -1,0 +1,23 @@
+package coreservlets;
+
+import java.io.IOException;
+
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+
+
+@WebServlet("/userprofile_submit")
+public class UserProfileController extends HttpServlet {
+	 private UserLoginDAO userLogin = new UserLoginDAO();
+	  @Override         
+	  public void doPost(HttpServletRequest request,
+	                    HttpServletResponse response)
+	      throws ServletException, IOException {
+	    
+		
+	     RequestDispatcher dispatcher = request.getRequestDispatcher(address);
+	    dispatcher.forward(request, response);
+	  }
+
+}

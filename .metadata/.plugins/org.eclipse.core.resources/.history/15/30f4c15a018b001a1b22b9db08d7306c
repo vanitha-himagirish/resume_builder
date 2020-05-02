@@ -1,0 +1,25 @@
+package coreservlets;
+
+import java.io.IOException;
+
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+
+
+@WebServlet("/userskill_submit")
+public class UserSkillController extends HttpServlet {
+	 private UserLoginDAO userDAO = new UserLoginDAO();
+	  @Override         
+	  public void doPost(HttpServletRequest request,
+	                    HttpServletResponse response)
+	      throws ServletException, IOException {
+	    
+		  String username = request.getParameter("txtUserName");
+		  
+		  String address = "userworkhistory.jsp";
+	     RequestDispatcher dispatcher = request.getRequestDispatcher(address);
+	     dispatcher.forward(request, response);
+	  }
+
+}

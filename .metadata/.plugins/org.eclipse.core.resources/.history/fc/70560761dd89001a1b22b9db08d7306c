@@ -1,0 +1,65 @@
+package coreservlets;
+
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class UserLoginDAO {
+	public Connection getconnection() throws ClassNotFoundException
+	{
+	    java.sql.Connection con = null;
+	   
+
+		try {
+			 Class.forName("com.mysql.jdbc.Driver");
+		    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/resumebuilder","root","");		    
+		  }
+		  catch(SQLException e) {
+		    System.out.println("SQLException caught: " +e.getMessage());
+		  }
+	    return con;
+	}
+	
+	public boolean UserLogin(String user, String Password) {
+		boolean status = false;
+		try{  
+			Connection con=getconnection();  			            
+			PreparedStatement ps=con.prepareStatement(  
+			    "select user_name,user_password from user_profile where user_name=? and user_password=?"); 			  
+			ps.setString(1,user);  
+			ps.setString(2, Password);  			              
+			ResultSet rs=ps.executeQuery();  
+			status=rs.next();  
+		 }catch(Exception e){
+			 System.out.println(e.getMessage());
+			 
+		 }  
+			  
+			return status;  
+			  
+	}
+	
+	public UserProfile getUserProfile(String user) {
+		UserProfile us = null;
+		try{  
+			Connection con=getconnection();  			            
+			PreparedStatement ps=con.prepareStatement(  
+			    "select * from user_profile where user_name=?"); 			  
+			ps.setString(1,user);  				              
+			ResultSet rs=ps.executeQuery();  
+			us.setUserName(rs.getString("user_name"));
+			
+			
+		
+		}catch(Exception e){
+			 System.out.println(e.getMessage());
+			 
+		 }  
+		return us;  
+			  
+	}
+}

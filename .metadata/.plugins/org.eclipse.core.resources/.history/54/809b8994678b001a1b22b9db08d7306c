@@ -1,0 +1,43 @@
+package coreservlets;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+
+
+@WebServlet("/UserDetails_Display")
+public class UserDetailsController extends HttpServlet {
+	private UserLoginDAO userDAO = new UserLoginDAO();
+	 
+	  @Override         
+	  public void doPost(HttpServletRequest request,
+	                    HttpServletResponse response)
+	      throws ServletException, IOException {
+		  
+		  String username="hg";
+		  
+		  int id = Integer.parseInt(request.getParameter("id"));
+		  
+	        UserSkill skill = new UserSkill(id,username);
+	       
+	        try {
+				userDAO.deleteSkill(skill);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	        //return "/myResume/userskills.jsp";
+
+	       String address = "userskills.jsp";
+	       RequestDispatcher dispatcher = request.getRequestDispatcher(address);
+		   dispatcher.forward(request, response);
+		  
+	  }
+		 
+
+
+}

@@ -1,0 +1,37 @@
+package model;
+
+import java.sql.*;
+
+public class UserLoginDAO {
+	public Connection getconnection() throws ClassNotFoundException
+	{
+	    java.sql.Connection con = null;
+	    Class.forName("org.gjt.mm.mysql.Driver");
+
+		try {
+		    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/resumebuilder","root","");		    
+		  }
+		  catch(SQLException e) {
+		    System.out.println("SQLException caught: " +e.getMessage());
+		  }
+	    return con;
+	}
+	
+	public boolean UserLogin(String user, String Password) {
+		boolean status = false;
+		try{  
+			Connection con=getconnection();  			            
+			PreparedStatement ps=con.prepareStatement(  
+			    "select user_name,user_password from user_profile where user_name=? and user_password=?"); 			  
+			ps.setString(1,user);  
+			ps.setString(2, Password);  			              
+			ResultSet rs=ps.executeQuery();  
+			status=rs.next();  
+		 }catch(Exception e){}  
+			  
+			return status;  
+			  
+			}  
+		return status;
+	}
+}

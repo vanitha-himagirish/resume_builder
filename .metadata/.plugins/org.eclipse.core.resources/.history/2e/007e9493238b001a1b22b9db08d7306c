@@ -1,0 +1,77 @@
+package coreservlets;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+
+
+@WebServlet("/userskill_submit")
+public class UserSkillController extends HttpServlet {
+	
+	private UserLoginDAO userDAO = new UserLoginDAO();
+	 
+	  @Override         
+	  public void doPost(HttpServletRequest request,
+	                    HttpServletResponse response)
+	      throws ServletException, IOException {
+	    
+		 // String action = request.getServletPath();
+		  
+	       // try {
+	         //   switch (action) {
+	           // case "/new":
+	            //	showNewForm(request, response);
+	              //  break;
+	           // case "/insert":
+	             //   insertBook(request, response);
+	      //          break;
+	            //case "/delete":
+	              //  deleteBook(request, response);
+	               // break;
+	            //case "/edit":
+	             //   showEditForm(request, response);
+	               // break;
+	            //case "/update":
+	              //  updateBook(request, response);
+	               // break;
+	            //default:
+	               // listBook(request, response);
+	               // break;
+	            //}
+	        //} catch (SQLException ex) {
+	          //  throw new ServletException(ex);
+	       // }
+	    //}
+	  //private void insertBook(HttpServletRequest request, HttpServletResponse response)
+	    //        throws SQLException, IOException, ServletException {
+	        
+		  	String username = "hg";
+	        String skill = request.getParameter("txtSkill");
+	        UserSkill newSkill = new UserSkill(0,username,skill);
+	        try {
+				userDAO.insertSkill(newSkill);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        List<UserSkill> listSkill;
+	        
+			try {
+				listSkill = userDAO.listSkills(username);
+				request.setAttribute("UserSkill", listSkill);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+	        String address = "userskills.jsp";
+		    RequestDispatcher dispatcher = request.getRequestDispatcher(address);
+		    dispatcher.forward(request, response);
+	    }
+	  
+		 
+
+
+}

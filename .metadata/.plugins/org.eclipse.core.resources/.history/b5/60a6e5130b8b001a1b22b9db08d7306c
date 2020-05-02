@@ -1,0 +1,28 @@
+package coreservlets;
+
+public class UserSkill {
+	private String username;
+	private String skill;
+	
+	public UserSkill(String uname,String skill) {
+		this.username=uname;
+		this.skill=skill;
+	}
+	
+	public String getUserame() {  
+	    return username;  
+	}  
+	  
+	public void setUserNAME(String user) {  
+	    this.username = user;  
+	}  
+	  
+	public String getSkill() {  
+	    return skill;  
+	}  
+	  
+	public void setPass(String skill) {  
+	    this.skill = skill;  
+	} 
+
+}
